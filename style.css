@@ -1,0 +1,717 @@
+/* ================================================================
+   style.css — Kesä Kalenteri
+================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Secular+One&display=swap');
+
+/* ----------------------------------------------------------------
+   RESET & BASE
+---------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  font-family: 'Secular One', sans-serif;
+}
+
+/* ----------------------------------------------------------------
+   SCENES
+   During dev all scenes stack vertically.
+   Once JS is wired, JS adds/removes .scene-active to show one at a time.
+---------------------------------------------------------------- */
+.scene {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  /* dev helper — remove once JS is wired */
+  margin-bottom: 80px;
+  border-top: 4px dashed rgba(0,0,0,0.15);
+}
+
+
+/* ================================================================
+   SCENE 1 — LANDING PAGE
+================================================================ */
+.scene-landing {
+  background-color: #0EA9E2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 32px 60px 32px;
+}
+
+/* Decoration — top right */
+.deco-top-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.deco-top-right img {
+  display: block;
+  max-width: 160px;
+}
+
+/* Header block — left aligned */
+.landing-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+/* h1 "Kesä- / Kalenteri" */
+.heading-main {
+  font-family: 'Secular One', sans-serif;
+  font-size: 64px;
+  line-height: 70px;
+  color: #FFD900;
+  text-align: left;
+  text-shadow: -2px 5px 0px rgba(0,0,0,0.35);
+}
+
+/* h2 "Kesäkuu" */
+.heading-sub {
+  font-family: 'Secular One', sans-serif;
+  font-size: 36px;
+  line-height: 1.2;
+  color: #FFF2FC;
+  text-align: left;
+  margin-top: 4px;
+}
+
+/* CTA "Avaa luukku ja voita!" */
+.landing-cta {
+  font-family: 'Secular One', sans-serif;
+  font-size: 24px;
+  color: #FFD900;
+  text-align: center;
+  width: 100%;
+  text-shadow: 0px 4px 3px rgba(0,0,0,0.30);
+  margin-bottom: 20px;
+}
+
+/* ----------------------------------------------------------------
+   MAIN HATCH
+   Inner area: 206×206 px
+   Border: 4px per side = 8px total ⟹ outer: 214×214 px
+---------------------------------------------------------------- */
+.main-hatch {
+  width: 206px;
+  height: 206px;
+  border: 4px solid #E9A7C3;
+  position: relative;
+  cursor: pointer;
+  margin: 0 auto 32px auto;
+  box-shadow: -5px 10px 3px rgba(0,0,0,0.30);
+  /* 3D perspective so the door rotates in space */
+  perspective: 700px;
+  perspective-origin: center center;
+}
+
+/* The hole sits flush behind the door — shows next scene colour */
+.hatch-hole {
+  position: absolute;
+  inset: 0;
+  background-color: #E9A7C3; /* default; JS overrides per target */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* The door sits on top and rotates open to the left.
+   Hinge is on the RIGHT edge → transform-origin: right center */
+.hatch-door {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: right center;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  backface-visibility: hidden;
+  /* Slight left-edge shadow so the door looks like it has depth */
+  box-shadow: -4px 0 12px rgba(0,0,0,0.25);
+}
+
+/* Door open state — added by JS */
+.hatch-door.open {
+  transform: perspective(700px) rotateY(-130deg);
+}
+
+.main-hatch-number {
+  font-family: 'Secular One', sans-serif;
+  font-size: 128px;
+  line-height: 1;
+}
+
+/* Day-12 hatch */
+.main-hatch.hatch-day-12 .hatch-door {
+  background-color: #E34589;
+}
+.main-hatch.hatch-day-12 .main-hatch-number {
+  color: #FFD900;
+}
+.main-hatch.hatch-day-12 .hatch-hole {
+  background-color: #E9A7C3;
+}
+
+/* Day-24 hatch */
+.main-hatch.hatch-day-24 .hatch-door {
+  background-color: #FFE135;
+}
+.main-hatch.hatch-day-24 .main-hatch-number {
+  color: #FF2583;
+}
+.main-hatch.hatch-day-24 .hatch-hole {
+  background-color: #7DC258;
+}
+
+/* ----------------------------------------------------------------
+   CALENDAR GRID — 7 cols × 5 rows
+---------------------------------------------------------------- */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 44px);
+  gap: 6px;
+  justify-content: center;
+}
+
+/* Base cell */
+.calendar-day {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Secular One', sans-serif;
+  font-size: 24px;
+}
+
+.calendar-day-empty {
+  background: transparent;
+}
+
+/* Group: past 1–11 */
+.group-past {
+  background-color: #E9A7C3;
+  color: #601717;
+}
+
+/* Group: today 12 */
+.group-today-12 {
+  background-color: #E34589;
+  color: #FFE135;
+  transform: translate(3px, -3px);
+  box-shadow: -4px 7px 1px rgba(0,0,0,0.30);
+}
+
+/* Group: future 13–23 */
+.group-future-a {
+  background-color: #565EE6;
+  color: #E9A7C3;
+}
+
+/* Group: special 24 */
+.group-special-24 {
+  background-color: #FFE135;
+  color: #FF2583;
+}
+
+/* Group: future 25–30 */
+.group-future-b {
+  background-color: #565EE6;
+  color: #E9A7C3;
+}
+
+
+/* ================================================================
+   SCENE 2 — MEMORY GAME
+================================================================ */
+.scene-memory {
+  background-color: #E9A7C3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 32px 60px 32px;
+}
+
+.deco-top-center {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.deco-top-center img {
+  max-width: 200px;
+}
+
+/* "Muistipeli" title */
+.scene-memory .heading-main {
+  font-family: 'Secular One', sans-serif;
+  font-size: 64px;
+  line-height: 70px;
+  color: #E34589;
+  text-align: center;
+  /* drop shadow: x -2, y 5, blur 2, colour #F8ECEC */
+  text-shadow: -2px 5px 2px rgba(248, 236, 236, 0.25);
+  margin-bottom: 32px;
+}
+
+/* 3 × 4 grid */
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 102px);
+  gap: 12px;
+}
+
+.memory-card {
+  width: 102px;
+  height: 127px;
+  cursor: pointer;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+}
+
+/* Card front face — shows symbol, green fill + border */
+.card-front {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Inner area: 94×117, border 4px each side → outer 102×127 */
+  background-color: #7DC258;
+  border: 4px solid #67B23F;
+  border-radius: 3px;
+  font-size: 48px;
+  color: #fff;
+}
+
+/* Card back face */
+.card-back {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FFEF79;
+  border: 4px solid #67B23F;
+  border-radius: 3px;
+}
+.card-back img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* ================================================================
+   SCENE 3 — WIN screen (day 12) — slides in from RIGHT
+================================================================ */
+.scene-win {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 80px 32px 0 32px;
+}
+
+.scene-win-12 {
+  background-color: #FFEF79;
+}
+
+/* "Voitit!" title */
+.scene-win-12 .heading-main {
+  font-family: 'Secular One', sans-serif;
+  font-size: 64px;
+  line-height: 70px;
+  color: #000000;
+  text-shadow: none;
+  text-align: center;
+}
+
+/* Sub-heading "kesäkalenteri • päivä 12" */
+.win-subtitle {
+  font-family: 'Secular One', sans-serif;
+  font-size: 20px;
+  color: #000000;
+  text-align: center;
+  margin-top: 16px;
+}
+
+/* Prize text */
+.win-prize {
+  font-family: 'Secular One', sans-serif;
+  font-size: 24px;
+  color: #000000;
+  text-align: center;
+  max-width: 340px;
+  margin-top: 12px;
+}
+
+.win-fullscreen-img {
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+}
+
+
+/* ================================================================
+   SCENE 4 — RANKING GAME (day 24)
+================================================================ */
+.scene-ranking {
+  background-color: #7DC258;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px 40px 20px;
+}
+
+.ranking-title {
+  font-family: 'Secular One', sans-serif;
+  font-size: 64px;
+  color: #ffffff;
+  text-align: center;
+  line-height: 70px;
+}
+
+.ranking-subtitle {
+  font-family: 'Secular One', sans-serif;
+  font-size: 20px;
+  color: #ffffff;
+  text-align: center;
+  margin-top: 8px;
+  margin-bottom: 32px;
+  max-width: 340px;
+}
+
+/* Wrapper: rank numbers on left, cards on right, centred together */
+.ranking-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  max-width: 420px;
+  justify-content: center;
+}
+
+/* Static rank numbers column — never moves */
+.ranking-numbers {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 0;
+}
+
+.rank-num {
+  font-family: 'Secular One', sans-serif;
+  font-size: 46px;
+  color: #ffffff;
+  height: 85px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  text-shadow: -2px 4px 1px rgba(0,0,0,0.25);
+}
+
+/* Cards column — draggable */
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 70vw;
+  max-width: 320px;
+}
+
+.ranking-card {
+  height: 85px;
+  border-radius: 15px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  font-family: 'Secular One', sans-serif;
+  font-size: 20px;
+  color: #ffffff;
+  box-shadow: -2px 4px 2px rgba(0,0,0,0.22);
+  user-select: none;
+}
+
+.ranking-card-ruisrock  { background-color: #FB8ABB; }
+.ranking-card-flow      { background-color: #FFBB00; }
+.ranking-card-tuska     { background-color: #FF5858; }
+.ranking-card-blockfest { background-color: #1097EB; }
+
+.rank-label {
+  font-family: 'Secular One', sans-serif;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.btn-continue-ranking {
+  margin-top: 36px;
+  font-family: 'Secular One', sans-serif;
+  font-size: 24px;
+  color: #ffffff;
+  background: #F43487;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 48px;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+.btn-continue-ranking:hover {
+  background: #d0206e;
+}
+
+
+/* ================================================================
+   SCENE 5 — SPIN THE WHEEL (day 24)
+================================================================ */
+.scene-wheel {
+  background-color: #E9A7C3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 0 48px 0;
+  gap: 28px;
+}
+
+.wheel-heading {
+  font-family: 'Secular One', sans-serif;
+  font-size: 32px;
+  color: #E34589;
+  text-align: center;
+  max-width: 320px;
+  line-height: 1.2;
+  padding: 0 20px;
+}
+
+/* Row: position relative so pointer can sit absolutely on the right of wheel */
+.wheel-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.wheel-canvas {
+  display: block;
+  width: 340px;
+  height: 340px;
+  filter: drop-shadow(-4px 10px 3px rgba(0,0,0,0.28));
+}
+
+/* Pointer — absolutely positioned to the right of the wheel,
+   tip touches the wheel edge, tail stretches to the screen edge */
+.wheel-pointer {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 22px solid transparent;
+  border-bottom: 22px solid transparent;
+  border-right: calc(50vw - 170px) solid #E34589;
+}
+
+.btn-spin {
+  font-family: 'Secular One', sans-serif;
+  font-size: 28px;
+  color: #ffffff;
+  background: #E34589;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 56px;
+  cursor: pointer;
+  letter-spacing: 2px;
+}
+.btn-spin:hover {
+  background: #c0306e;
+}
+
+
+/* ================================================================
+   SCENE 6 — WIN screen (day 24) — slides in from BOTTOM
+================================================================ */
+.scene-win-24 {
+  background-color: #FFD900;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 20px 40px 20px;
+  position: relative;
+}
+
+/* "Kesäkalenteri • Päivä 24" — top left, 35px from top */
+.win24-label {
+  font-family: 'Secular One', sans-serif;
+  font-size: 20px;
+  color: #ffffff;
+  text-align: left;
+  margin-top: 35px;
+  margin-bottom: 12px;
+}
+
+/* "Onneksi Olkoon!" */
+.win24-title {
+  font-family: 'Secular One', sans-serif;
+  font-size: 64px;
+  line-height: 70px;
+  color: #ffffff;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+/* "Voitit 25% alennuksen festareille!" */
+.win24-sub {
+  font-family: 'Secular One', sans-serif;
+  font-size: 20px;
+  color: #333333;
+  text-align: left;
+  margin-bottom: 24px;
+}
+
+/* Image wrapper — full width minus 20px each side, centred */
+.win24-img-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.win24-img {
+  width: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* "Lunasta etusi..." */
+.win24-redeem {
+  font-family: 'Secular One', sans-serif;
+  font-size: 24px;
+  color: #333333;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+/* "lippumestari.fi" */
+.win24-url {
+  font-family: 'Secular One', sans-serif;
+  font-size: 35px;
+  color: #333333;
+  text-align: center;
+  width: 100%;
+}
+
+
+/* ================================================================
+   MEMORY SCENE — slide-up entrance animation
+================================================================ */
+@keyframes slideUpFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anim-slide-up {
+  animation: slideUpFadeIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Make sure memory grid items start hidden before JS fires */
+#scene-memory .deco-top-center,
+#scene-memory .heading-main,
+#scene-memory .memory-card {
+  opacity: 0;
+}
+
+/* Once JS adds the class, animation takes over */
+#scene-memory .anim-slide-up {
+  opacity: 1;
+}
+
+/* Win screen prize image — pinned to bottom, scales with screen */
+.win-prize-img {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80vw;        /* 80% of screen width on small phones */
+  max-width: 420px;   /* never gets too big on wide screens */
+  max-height: 60vh;   /* never takes more than 40% of screen height */
+  object-fit: contain;
+  display: block;
+  z-index: 0;
+}
+
+
+/* Memory card emoji */
+.card-emoji {
+  font-size: 52px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ================================================================
+   RANKING SCENE — slide-from-left entrance animation
+================================================================ */
+@keyframes slideLeftFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.anim-slide-left {
+  animation: slideLeftFadeIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Start hidden before JS fires */
+#scene-ranking .ranking-title,
+#scene-ranking .ranking-subtitle,
+#scene-ranking .ranking-card,
+#scene-ranking .btn-continue-ranking {
+  opacity: 0;
+}
+
+#scene-ranking .anim-slide-left {
+  opacity: 1;
+}
+
+/* ================================================================
+   PUSH TRANSITION — allow two scenes to be visible simultaneously
+   so the push effect works without a white flash
+================================================================ */
+.scene.active {
+  overflow: hidden;
+}

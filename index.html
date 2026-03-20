@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0EA9E2" />
+  <title>Kesä Kalenteri</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       SCENE 1 — LANDING PAGE
+       Active hatch defaults to day 12.
+       JS will swap hatch-day-12 / hatch-day-24 classes on #main-hatch
+       and update #main-hatch-number to reflect the correct day.
+  ============================================================ -->
+  <div id="scene-landing" class="scene scene-landing">
+
+    <!-- Decoration image — top-right corner -->
+    <div class="deco deco-top-right">
+      <img src="assets/deco-landing.png" alt="decoration" />
+    </div>
+
+    <!-- Hero text -->
+    <header class="landing-header">
+      <h1 class="heading-main">Kesä Kalenteri</h1>
+      <h2 class="heading-sub">Kesäkuu</h2>
+      <p class="landing-cta">avaa luukku ja voita!</p>
+    </header>
+
+    <!-- Big hatch — clicking this triggers the zoom-in transition.
+         JS adds .hatch-day-12 or .hatch-day-24 to control which
+         highlight class is active and which scene to go to. -->
+    <div id="main-hatch" class="main-hatch hatch-day-12">
+      <!-- Hole: visible behind the door once it swings open -->
+      <div id="hatch-hole" class="hatch-hole"></div>
+      <!-- Door: rotates open to the left on a right-side hinge -->
+      <div id="hatch-door" class="hatch-door">
+        <span id="main-hatch-number" class="main-hatch-number">12</span>
+      </div>
+    </div>
+
+    <!-- Calendar grid — 7 columns, rows 1–4 = days 1–28, row 5 = days 29–30
+         Days are split into groups so CSS can colour each group independently.
+         group-past      = days already passed (1–11)
+         group-today-12  = today's featured day (12)
+         group-future-a  = days 13–23
+         group-special-24 = bonus featured day (24)
+         group-future-b  = days 25–30
+    -->
+    <div class="calendar-grid">
+
+      <!-- group-past: days 1–11 -->
+      <div class="calendar-day group-past" data-day="1">1</div>
+      <div class="calendar-day group-past" data-day="2">2</div>
+      <div class="calendar-day group-past" data-day="3">3</div>
+      <div class="calendar-day group-past" data-day="4">4</div>
+      <div class="calendar-day group-past" data-day="5">5</div>
+      <div class="calendar-day group-past" data-day="6">6</div>
+      <div class="calendar-day group-past" data-day="7">7</div>
+      <div class="calendar-day group-past" data-day="8">8</div>
+      <div class="calendar-day group-past" data-day="9">9</div>
+      <div class="calendar-day group-past" data-day="10">10</div>
+      <div class="calendar-day group-past" data-day="11">11</div>
+
+      <!-- group-today-12: current active day -->
+      <div class="calendar-day group-today-12" data-day="12">12</div>
+
+      <!-- group-future-a: days 13–23 -->
+      <div class="calendar-day group-future-a" data-day="13">13</div>
+      <div class="calendar-day group-future-a" data-day="14">14</div>
+      <div class="calendar-day group-future-a" data-day="15">15</div>
+      <div class="calendar-day group-future-a" data-day="16">16</div>
+      <div class="calendar-day group-future-a" data-day="17">17</div>
+      <div class="calendar-day group-future-a" data-day="18">18</div>
+      <div class="calendar-day group-future-a" data-day="19">19</div>
+      <div class="calendar-day group-future-a" data-day="20">20</div>
+      <div class="calendar-day group-future-a" data-day="21">21</div>
+      <div class="calendar-day group-future-a" data-day="22">22</div>
+      <div class="calendar-day group-future-a" data-day="23">23</div>
+
+      <!-- group-special-24: bonus featured day -->
+      <div class="calendar-day group-special-24" data-day="24">24</div>
+
+      <!-- group-future-b: days 25–30 -->
+      <div class="calendar-day group-future-b" data-day="25">25</div>
+      <div class="calendar-day group-future-b" data-day="26">26</div>
+      <div class="calendar-day group-future-b" data-day="27">27</div>
+      <div class="calendar-day group-future-b" data-day="28">28</div>
+
+      <!-- Row 5 — only 2 days, bottom-left, remaining cells are empty spacers -->
+      <div class="calendar-day group-future-b" data-day="29">29</div>
+      <div class="calendar-day group-future-b" data-day="30">30</div>
+      <div class="calendar-day calendar-day-empty"></div>
+      <div class="calendar-day calendar-day-empty"></div>
+      <div class="calendar-day calendar-day-empty"></div>
+      <div class="calendar-day calendar-day-empty"></div>
+      <div class="calendar-day calendar-day-empty"></div>
+
+    </div>
+    <!-- /calendar-grid -->
+
+  </div>
+  <!-- /scene-landing -->
+
+
+  <!-- ============================================================
+       SCENE 2 — MEMORY GAME  (day 12 path)
+       JS zooms into the hatch then swaps scene-landing out and
+       scene-memory in.
+  ============================================================ -->
+  <div id="scene-memory" class="scene scene-memory">
+
+    <!-- Decoration image — top of page -->
+    <div class="deco deco-top-center">
+      <img src="assets/deco-memory.png" alt="decoration" />
+    </div>
+
+    <h1 class="heading-main">Muistipeli</h1>
+
+    <!-- 3 columns × 4 rows = 12 cards = 6 pairs
+         Symbols used (one per pair):  ★  ●  ■  ▲  ♦  ✚
+         Each card has:
+           .card-inner   — flips on click (JS)
+           .card-front   — visible before flip, shows symbol
+           .card-back    — visible after flip, shows prize PNG placeholder
+         JS controls matched/unmatched state via classes.
+    -->
+    <div class="memory-grid">
+
+      <div class="memory-card" data-pair="1">
+        <div class="card-inner">
+          <div class="card-front"><span class="card-emoji">🍓</span></div>
+          <div class="card-back"><span class="card-emoji">🍓</span></div>
+        </div>
+      </div>
+
+      <div class="memory-card" data-pair="2">
+        <div class="card-inner">
+          <div class="card-front"><span class="card-emoji">🫐</span></div>
+          <div class="card-back"><span class="card-emoji">🫐</span></div>
+        </div>
+      </div>
+
+      <div class="memory-card" data-pair="3">
+        <div class="card-inner">
+          <div class="card-front"><span class="card-emoji">🍫</span></div>
+          <div class="card-back"><span class="card-emoji">🍫</span></div>
+        </div>
+      </div>
+
+      <div class="memory-card" data-pair="4">
+        <div class="card-inner">
+          <div class="card-front"><span class="card-emoji">🌿</span></div>
+          <div class="card-back"><span class="card-emoji">🌿</span></div>
+        </div>
+      </div>
+
+      <div class="memory-card" data-pair="5">
+        <div class="card-inner">
+          <div class="card-front"><span class="card-emoji">🍦</span></div>
+          <div class="card-back"><span class="card-emoji">🍦</span></div>
+        </div>
+      </div>
+
+      <div class="memory-card" data-pair="6">
+        <div class="card-inner">
+          <div class="card-front"><span class="card-emoji">🍌</span></div>
+          <div class="card-back"><span class="card-emoji">🍌</span></div>
+        </div>
+      </div>
+
+      <div class="memory-card" data-pair="6">
+        <div class="card-inner">
+          <div class="card-front"><span class="card-emoji">🍌</span></div>
+          <div class="card-back"><span class="card-emoji">🍌</span></div>
+        </div>
+      </div>
+
+      <div class="memory-card" data-pair="5">
+        <div class="card-inner">
+          <div class="card-front"><span class="card-emoji">🍦</span></div>
+          <div class="card-back"><span class="card-emoji">🍦</span></div>
+        </div>
+      </div>
+
+      <div class="memory-card" data-pair="4">
+        <div class="card-inner">
+          <div class="card-front"><span class="card-emoji">🌿</span></div>
+          <div class="card-back"><span class="card-emoji">🌿</span></div>
+        </div>
+      </div>
+
+      <div class="memory-card" data-pair="3">
+        <div class="card-inner">
+          <div class="card-front"><span class="card-emoji">🍫</span></div>
+          <div class="card-back"><span class="card-emoji">🍫</span></div>
+        </div>
+      </div>
+
+      <div class="memory-card" data-pair="2">
+        <div class="card-inner">
+          <div class="card-front"><span class="card-emoji">🫐</span></div>
+          <div class="card-back"><span class="card-emoji">🫐</span></div>
+        </div>
+      </div>
+
+      <div class="memory-card" data-pair="1">
+        <div class="card-inner">
+          <div class="card-front"><span class="card-emoji">🍓</span></div>
+          <div class="card-back"><span class="card-emoji">🍓</span></div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /memory-grid -->
+
+  </div>
+  <!-- /scene-memory -->
+
+
+  <!-- ============================================================
+       SCENE 3 — WIN SCREEN  (day 12 path)
+       Slides in from the RIGHT over scene-memory once all pairs matched.
+
+       OPTION A (recommended): Replace this entire div's contents with
+       a full-bleed <img> exported from Figma once the design is ready.
+       OPTION B: Keep the HTML below and style with CSS.
+  ============================================================ -->
+  <div id="scene-win-12" class="scene scene-win scene-win-12">
+
+    <!--
+      OPTION A — swap everything inside here for:
+      <img src="assets/win-12-figma.png" alt="Voitit!" class="win-fullscreen-img" alt="Voitit!" class="win-fullscreen-img" />
+    -->
+
+    <h1 class="heading-main">Voitit!</h1>
+    <h2 class="win-subtitle win-label">kesäkalenteri &bull; päivä 12</h2>
+    <h2 class="win-subtitle win-prize">
+      Palkintosi on -20% kaikista R-kioskin Jäätelöistä!
+    </h2>
+    <img src="assets/win-12-figma.png" alt="Voitit!" class="win-prize-img" />
+
+  </div>
+  <!-- /scene-win-12 -->
+
+
+  <!-- ============================================================
+       SCENE 4 — RANKING GAME  (day 24 path)
+       JS zooms into the day-24 hatch then shows this scene.
+       Cards are draggable (JS handles drag-and-drop ordering).
+  ============================================================ -->
+  <div id="scene-ranking" class="scene scene-ranking">
+
+    <h1 class="ranking-title">Festarit!</h1>
+    <h2 class="ranking-subtitle">Järjestä festarit omien mieltymystesi mukaan!</h2>
+
+    <!-- rank numbers sit outside the cards, cards are draggable -->
+    <div class="ranking-wrapper">
+      <div class="ranking-numbers">
+        <span class="rank-num">1</span>
+        <span class="rank-num">2</span>
+        <span class="rank-num">3</span>
+        <span class="rank-num">4</span>
+      </div>
+      <div class="ranking-list">
+        <div class="ranking-card ranking-card-ruisrock" draggable="true" data-rank-id="1">
+          <span class="rank-label">Ruisrock</span>
+        </div>
+        <div class="ranking-card ranking-card-flow" draggable="true" data-rank-id="2">
+          <span class="rank-label">Flow Festival</span>
+        </div>
+        <div class="ranking-card ranking-card-tuska" draggable="true" data-rank-id="3">
+          <span class="rank-label">Tuska Festival</span>
+        </div>
+        <div class="ranking-card ranking-card-blockfest" draggable="true" data-rank-id="4">
+          <span class="rank-label">Blockfest</span>
+        </div>
+      </div>
+    </div>
+
+    <button id="ranking-continue-btn" class="btn-continue-ranking">Seuraava</button>
+
+  </div>
+  <!-- /scene-ranking -->
+
+
+  <!-- ============================================================
+       SCENE 5 — SPIN THE WHEEL  (day 24 path)
+       Continues from scene-ranking.
+       The wheel is a <canvas> or CSS conic-gradient circle drawn by JS.
+       14 sections are defined here as data; JS renders them visually.
+       The spin button triggers the animation; when it stops JS
+       fires the scene-win-24 overlay.
+  ============================================================ -->
+  <div id="scene-wheel" class="scene scene-wheel">
+
+    <p class="wheel-heading">Pyöräytä onnenpyörää ja voita palkinto!</p>
+
+    <div class="wheel-row">
+
+      <!-- Wheel canvas -->
+      <canvas id="wheel-canvas" class="wheel-canvas" width="340" height="340"></canvas>
+
+      <!-- Pointer on the RIGHT side — CSS triangle pointing left into the wheel -->
+      <div class="wheel-pointer"></div>
+
+    </div>
+
+    <button id="wheel-spin-btn" class="btn-spin">Pyöritä</button>
+
+  </div>
+  <!-- /scene-wheel -->
+
+
+  <!-- ============================================================
+       SCENE 6 — WIN SCREEN  (day 24 path)
+       Slides in from the BOTTOM over scene-wheel once wheel stops.
+
+       Same Figma swap option as scene-win-12.
+  ============================================================ -->
+  <div id="scene-win-24" class="scene scene-win scene-win-24">
+
+    <!-- Top label: left aligned, 35px from top -->
+    <p class="win24-label">Kesäkalenteri &bull; Päivä 24</p>
+
+    <!-- Title -->
+    <h1 class="win24-title">Onneksi Olkoon!</h1>
+
+    <!-- Sub text -->
+    <p class="win24-sub">Voitit 25% alennuksen festareille!</p>
+
+    <!-- Prize image placeholder — 20px from sides, centred -->
+    <div class="win24-img-wrap">
+      <img src="assets/win-24-prize.png" alt="Palkinto" class="win24-img" />
+    </div>
+
+    <!-- Redemption text -->
+    <p class="win24-redeem">Lunasta etusi verkkokaupassa oston yhteydessä!</p>
+
+    <!-- URL -->
+    <p class="win24-url">lippumestari.fi</p>
+
+  </div>
+  <!-- /scene-win-24 -->
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>
